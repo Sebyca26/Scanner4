@@ -1,0 +1,21 @@
+name: scanner
+on:
+  schedule:
+    - cron: "3 * * * *"
+  workflow_dispatch:
+concurrency:
+  group: scanner
+  cancel-in-progress: false
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python scanner_pro.py all --telegram --tf=1h
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
